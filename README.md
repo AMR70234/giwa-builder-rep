@@ -1,5 +1,8 @@
 # GIWA Builder Rep
 
+[![Smart Contract Tests](https://github.com/AMR70234/giwa-builder-rep/actions/workflows/test.yml/badge.svg)](https://github.com/AMR70234/giwa-builder-rep/actions/workflows/test.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+
 On-chain reputation for builders in the GIWA ecosystem. Attestations are weighted automatically by the issuer's own reputation — a vouch from a trusted builder counts more than one from a brand-new account.
 
 **Live demo:** [giwa-builder-rep.vercel.app](https://giwa-builder-rep.vercel.app/)
@@ -78,3 +81,7 @@ Then open the local URL in a browser with MetaMask installed, connected to GIWA 
 ## Built for
 
 [GASOK](https://giwa.io/gasok) — GIWA's Web3 incubation & acceleration program. Track: **GIWA-Native Ideas**.
+
+## License
+
+MIT — see [LICENSE](./LICENSE).
