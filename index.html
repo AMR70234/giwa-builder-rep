@@ -171,8 +171,9 @@
 
   .card{
     background:var(--ink-2);border:1px solid var(--line);border-radius:4px;
-    padding:26px 24px;position:relative;
+    padding:26px 24px;position:relative;transition:border-color .25s ease;
   }
+  .card:hover{border-color:rgba(74,123,171,0.35);}
   .card::before{
     content:"";position:absolute;top:-1px;left:20px;width:36px;height:8px;
     background:var(--tile);border-radius:0 0 18px 18px;
@@ -213,8 +214,9 @@
   .status.success{background:rgba(79,143,107,0.12);color:var(--good);border:1px solid rgba(79,143,107,0.3);}
   .status.error{background:rgba(181,69,63,0.12);color:#e0837e;border:1px solid rgba(181,69,63,0.3);}
 
-  .lookup-result{margin-top:20px;display:none;}
+  .lookup-result{margin-top:20px;display:none;opacity:0;transform:translateY(6px);transition:opacity .35s ease, transform .35s ease;}
   .lookup-result.show{display:block;}
+  .lookup-result.show.in{opacity:1;transform:translateY(0);}
   .score-display{
     display:flex;align-items:baseline;gap:10px;padding:18px;
     background:var(--ink);border-radius:3px;margin-bottom:16px;border:1px solid var(--line);
@@ -229,6 +231,74 @@
   .attestation-item .cat{font-weight:700;color:var(--paper);margin-bottom:4px;}
   .attestation-item .meta{color:var(--paper-dim);font-size:11.5px;font-family:'IBM Plex Mono',monospace;}
   .attestation-item .weight{color:var(--brass);font-weight:600;}
+
+  /* ===== Section headers (shared) ===== */
+  .section-head{margin:64px 0 24px;}
+  .section-head .eyebrow{
+    font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:3px;
+    color:var(--brass);text-transform:uppercase;margin-bottom:8px;
+  }
+  .section-head h2{
+    font-family:'Noto Serif KR',serif;font-weight:700;font-size:26px;margin:0;
+  }
+  .section-head p{color:var(--paper-dim);font-size:13.5px;margin-top:8px;max-width:560px;line-height:1.7;}
+
+  /* ===== Use cases ===== */
+  .usecases-grid{display:grid;grid-template-columns:1fr;gap:14px;}
+  @media(min-width:700px){.usecases-grid{grid-template-columns:1fr 1fr;}}
+  .usecase{
+    background:var(--ink-2);border:1px solid var(--line);border-radius:4px;
+    padding:22px;transition:border-color .2s, transform .2s;
+  }
+  .usecase:hover{border-color:var(--tile-light);transform:translateY(-2px);}
+  .usecase .icon{
+    width:34px;height:34px;border-radius:3px;background:rgba(74,123,171,0.12);
+    display:flex;align-items:center;justify-content:center;margin-bottom:14px;
+    color:var(--tile-glow);font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:13px;
+  }
+  .usecase h4{font-family:'Noto Serif KR',serif;font-size:15.5px;margin:0 0 6px;font-weight:700;}
+  .usecase p{color:var(--paper-dim);font-size:13px;line-height:1.7;margin:0;}
+
+  /* ===== Levels legend ===== */
+  .levels-strip{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:0;}
+  .level-chip{
+    display:flex;align-items:center;gap:8px;background:var(--ink);border:1px solid var(--line);
+    border-radius:20px;padding:7px 14px 7px 8px;font-size:12px;transition:border-color .2s;
+  }
+  .level-chip:hover{border-color:var(--tile-light);}
+  .level-chip .dot{
+    width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:700;color:var(--ink);
+    background:var(--brass);flex-shrink:0;
+  }
+  .level-chip .name{color:var(--paper-dim);}
+  .level-chip .range{color:var(--paper-dim);font-family:'IBM Plex Mono',monospace;font-size:10.5px;opacity:0.7;}
+
+  .badge-inline{
+    display:inline-flex;align-items:center;gap:6px;background:rgba(201,162,39,0.1);
+    border:1px solid rgba(201,162,39,0.3);border-radius:20px;padding:3px 10px 3px 4px;
+    font-size:11px;font-weight:600;color:var(--brass);
+  }
+  .badge-inline .dot{
+    width:16px;height:16px;border-radius:50%;background:var(--brass);color:var(--ink);
+    display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;
+    font-size:8px;font-weight:700;
+  }
+
+  /* ===== Leaderboard ===== */
+  .leaderboard{width:100%;border-collapse:collapse;font-size:13.5px;}
+  .leaderboard th{
+    text-align:left;color:var(--paper-dim);font-size:10.5px;letter-spacing:1.5px;
+    text-transform:uppercase;font-weight:600;padding:0 10px 12px;font-family:'IBM Plex Mono',monospace;
+  }
+  .leaderboard td{padding:12px 10px;border-top:1px solid var(--line);}
+  .leaderboard tr:hover td{background:rgba(74,123,171,0.05);}
+  .leaderboard .rank{font-family:'Noto Serif KR',serif;font-weight:900;color:var(--paper-dim);width:36px;}
+  .leaderboard tr:nth-child(1) .rank{color:var(--brass);}
+  .leaderboard .addr{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--tile-glow);text-decoration:none;}
+  .leaderboard .score-cell{font-family:'Noto Serif KR',serif;font-weight:900;color:var(--brass);text-align:right;}
+  .lb-empty{color:var(--paper-dim);font-size:13px;padding:20px 0;text-align:center;}
+  .lb-loading{color:var(--paper-dim);font-size:13px;padding:16px 0;}
 
   footer{
     margin-top:60px;padding-top:24px;border-top:1px solid var(--line);
@@ -307,6 +377,57 @@
     <div class="formula-box">issuerWeight = 1 + floor(issuerScore ÷ 10) — capped at 100</div>
   </section>
 
+  <!-- ===== USE CASES ===== -->
+  <section>
+    <div class="section-head">
+      <div class="eyebrow">02 / WHO IT'S FOR</div>
+      <h2>Built for real GIWA workflows</h2>
+      <p>Trust infrastructure only matters if it plugs into how people actually work. Here's where a portable, weighted reputation score changes the equation.</p>
+    </div>
+    <div class="usecases-grid">
+      <div class="usecase">
+        <div class="icon">FL</div>
+        <h4>Freelancers</h4>
+        <p>Prove delivered work with on-chain attestations from real clients and collaborators — a portable track record that travels with your wallet, not locked inside one platform.</p>
+      </div>
+      <div class="usecase">
+        <div class="icon">DAO</div>
+        <h4>DAOs</h4>
+        <p>Weight governance participation or contributor selection by verifiable reputation instead of token balance alone — harder to game than a simple vote count.</p>
+      </div>
+      <div class="usecase">
+        <div class="icon">BH</div>
+        <h4>Bounties &amp; hackathons</h4>
+        <p>Organizers can filter applicants by track record before a single line of code is reviewed, cutting down on low-effort or duplicate submissions.</p>
+      </div>
+      <div class="usecase">
+        <div class="icon">HR</div>
+        <h4>Hiring in Web3</h4>
+        <p>Teams hiring on-chain talent get a verifiable signal beyond a GitHub profile or a resume — attestations from people who've actually worked with the candidate.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== LEADERBOARD ===== -->
+  <section>
+    <div class="section-head">
+      <div class="eyebrow">03 / TOP BUILDERS</div>
+      <h2>Leaderboard</h2>
+      <p>Ranked by total reputation score, pulled live from the contract.</p>
+    </div>
+    <div class="card">
+      <div class="levels-strip" id="levelsStrip" style="margin-bottom:20px;"></div>
+      <div id="leaderboardBody">
+        <div class="lb-loading"><span class="spinner"></span>Loading leaderboard...</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-head">
+    <div class="eyebrow">04 / GET STARTED</div>
+    <h2>Try it yourself</h2>
+  </div>
+
   <div class="grid cols-2">
 
     <div class="card">
@@ -356,6 +477,7 @@
       <div class="score-display">
         <span class="num-big" id="scoreNum">0</span>
         <span class="label">Total Reputation Score</span>
+        <span id="scoreLevelBadge" style="margin-left:auto;"></span>
       </div>
       <div id="attestationsList"></div>
     </div>
@@ -370,6 +492,18 @@
 
 <script>
 const CONTRACT_ADDRESS = "0x2b3176f8D3d0C5D1D58e662c5a7180E4E9fEf71B";
+
+const LEVELS = [
+  { min: 0,   name: "Novice Builder",  tag: "L1" },
+  { min: 10,  name: "Trusted Builder", tag: "L2" },
+  { min: 50,  name: "Veteran Builder", tag: "L3" },
+  { min: 150, name: "Elder Builder",   tag: "L4" },
+];
+function levelFor(score){
+  let current = LEVELS[0];
+  for(const l of LEVELS){ if(score >= l.min) current = l; }
+  return current;
+}
 const GIWA_CHAIN_ID = 91342;
 const GIWA_CHAIN_ID_HEX = "0x" + GIWA_CHAIN_ID.toString(16);
 
@@ -450,6 +584,15 @@ async function loadMyProfile(){
 
     document.getElementById('myAddress').textContent = userAddress.slice(0,6) + '...' + userAddress.slice(-4);
     document.getElementById('myScore').textContent = score.toString();
+    const myLvl = levelFor(Number(score));
+    let lvlSpan = document.getElementById('myLevelTag');
+    if(!lvlSpan){
+      lvlSpan = document.createElement('span');
+      lvlSpan.id = 'myLevelTag';
+      lvlSpan.style.cssText = 'color:var(--paper-dim);font-size:11px;';
+      document.getElementById('myScore').insertAdjacentElement('afterend', lvlSpan);
+    }
+    lvlSpan.textContent = ` (${myLvl.tag} · ${myLvl.name})`;
 
     if(profile.exists){
       el.classList.remove('no-profile');
@@ -481,6 +624,7 @@ document.getElementById('createProfileBtn').addEventListener('click', async () =
     await tx.wait();
     showStatus(statusEl,'success','✅ Profile created successfully!');
     await loadMyProfile();
+    loadLeaderboard();
   }catch(e){
     showStatus(statusEl,'error','❌ ' + (e.reason || e.shortMessage || e.message));
   }
@@ -526,6 +670,9 @@ document.getElementById('lookupBtn').addEventListener('click', async () => {
     const attestations = await readContract.getAttestations(address);
 
     document.getElementById('scoreNum').textContent = score.toString();
+    const lvl = levelFor(Number(score));
+    document.getElementById('scoreLevelBadge').innerHTML =
+      `<span class="badge-inline"><span class="dot">${lvl.tag}</span>${lvl.name}</span>`;
 
     const listEl = document.getElementById('attestationsList');
     if(attestations.length === 0){
@@ -544,6 +691,7 @@ document.getElementById('lookupBtn').addEventListener('click', async () => {
     }
 
     resultEl.classList.add('show');
+    requestAnimationFrame(() => resultEl.classList.add('in'));
     statusEl.classList.remove('show');
   }catch(e){
     showStatus(statusEl,'error','❌ ' + (e.reason || e.shortMessage || e.message));
@@ -555,6 +703,74 @@ if(window.ethereum){
   window.ethereum.on('accountsChanged', () => window.location.reload());
   window.ethereum.on('chainChanged', () => window.location.reload());
 }
+
+// ===== Levels legend =====
+function renderLevelsStrip(){
+  const strip = document.getElementById('levelsStrip');
+  strip.innerHTML = LEVELS.map((l, i) => {
+    const max = LEVELS[i+1] ? LEVELS[i+1].min - 1 : '+';
+    const range = LEVELS[i+1] ? `${l.min}–${max}` : `${l.min}+`;
+    return `<div class="level-chip"><span class="dot">${l.tag}</span><span class="name">${l.name}</span><span class="range">${range} pts</span></div>`;
+  }).join('');
+}
+renderLevelsStrip();
+
+// ===== Leaderboard =====
+async function loadLeaderboard(){
+  const body = document.getElementById('leaderboardBody');
+  const readProvider = provider || new ethers.JsonRpcProvider('https://sepolia-rpc.giwa.io');
+  const readContract = new ethers.Contract(CONTRACT_ADDRESS, ABI, readProvider);
+
+  try{
+    const filter = readContract.filters.ProfileCreated();
+    const events = await readContract.queryFilter(filter, 0, 'latest');
+
+    if(events.length === 0){
+      body.innerHTML = '<div class="lb-empty">No builders have created a profile yet — be the first below.</div>';
+      return;
+    }
+
+    const uniqueAddresses = [...new Set(events.map(e => e.args.user))];
+
+    const rows = await Promise.all(uniqueAddresses.map(async (addr) => {
+      const [profile, score] = await Promise.all([
+        readContract.profiles(addr),
+        readContract.getScore(addr)
+      ]);
+      return { addr, handle: profile.handle, score: Number(score) };
+    }));
+
+    rows.sort((a, b) => b.score - a.score);
+    const top = rows.slice(0, 10);
+
+    body.innerHTML = `
+      <table class="leaderboard">
+        <thead>
+          <tr><th>#</th><th>Builder</th><th>Level</th><th style="text-align:right">Score</th></tr>
+        </thead>
+        <tbody>
+          ${top.map((r, i) => {
+            const lvl = levelFor(r.score);
+            return `
+            <tr>
+              <td class="rank">${i+1}</td>
+              <td>
+                <div style="font-weight:600;font-size:13px;">${r.handle || '(no handle)'}</div>
+                <a class="addr" href="https://sepolia-explorer.giwa.io/address/${r.addr}" target="_blank">${r.addr.slice(0,6)}...${r.addr.slice(-4)} ↗</a>
+              </td>
+              <td><span class="badge-inline"><span class="dot">${lvl.tag}</span>${lvl.name}</span></td>
+              <td class="score-cell">${r.score}</td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+    `;
+  }catch(e){
+    console.error(e);
+    body.innerHTML = '<div class="lb-empty">Couldn\'t load the leaderboard right now. Try refreshing.</div>';
+  }
+}
+loadLeaderboard();
 </script>
 
 </body>
