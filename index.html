@@ -351,6 +351,70 @@
   .lb-empty{color:var(--paper-dim);font-size:13px;padding:20px 0;text-align:center;}
   .lb-loading{color:var(--paper-dim);font-size:13px;padding:16px 0;}
 
+  /* ===== Wallet integration mockup ===== */
+  .wallet-showcase{
+    display:grid;grid-template-columns:1fr;gap:36px;align-items:center;margin-top:24px;
+  }
+  @media(min-width:800px){.wallet-showcase{grid-template-columns:1fr 340px;}}
+  .wallet-copy .point{
+    display:flex;gap:12px;margin-bottom:18px;align-items:flex-start;
+  }
+  .wallet-copy .point .num{
+    font-family:'IBM Plex Mono',monospace;color:var(--brass);font-size:12px;
+    flex-shrink:0;width:22px;padding-top:2px;
+  }
+  .wallet-copy .point p{margin:0;color:var(--paper-dim);font-size:13.5px;line-height:1.75;}
+  .wallet-copy .point strong{color:var(--paper);}
+
+  .phone-frame{
+    background:#050607;border:1px solid var(--line);border-radius:28px;
+    padding:14px;width:100%;max-width:320px;margin:0 auto;
+    box-shadow:0 30px 60px -20px rgba(0,0,0,0.7);
+  }
+  .phone-screen{
+    background:linear-gradient(180deg, #0d1420, var(--ink));
+    border-radius:18px;padding:20px 18px;min-height:420px;
+  }
+  .phone-notch{width:60px;height:5px;background:#222;border-radius:3px;margin:0 auto 16px;}
+  .wallet-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;}
+  .wallet-header .app-name{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:var(--paper);}
+  .wallet-header .app-name svg{width:16px;height:12px;}
+  .wallet-header .net-pill{
+    font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--good);
+    background:rgba(79,143,107,0.12);border:1px solid rgba(79,143,107,0.3);
+    padding:3px 8px;border-radius:10px;
+  }
+  .wallet-balance{text-align:center;margin-bottom:24px;}
+  .wallet-balance .amt{font-family:'Noto Serif KR',serif;font-weight:900;font-size:30px;color:var(--paper);}
+  .wallet-balance .addr{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--paper-dim);margin-top:4px;}
+
+  .rep-card{
+    background:linear-gradient(135deg, rgba(30,58,95,0.35), rgba(201,162,39,0.08));
+    border:1px solid var(--tile-light);border-radius:12px;padding:16px;
+    animation:repcard-in .6s ease .3s both;
+  }
+  @keyframes repcard-in{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+  .rep-card .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+  .rep-card .label{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--paper-dim);text-transform:uppercase;}
+  .rep-card .badge-inline{font-size:10px;}
+  .rep-card .score-row{display:flex;align-items:baseline;gap:8px;}
+  .rep-card .score-row .n{font-family:'Noto Serif KR',serif;font-weight:900;font-size:32px;color:var(--brass);}
+  .rep-card .score-row .l{font-size:11px;color:var(--paper-dim);}
+  .rep-card .tiles-mini{display:flex;gap:3px;margin-top:12px;}
+  .rep-card .tiles-mini .t{
+    width:16px;height:10px;background:linear-gradient(160deg,var(--tile-light),var(--tile));
+    border-radius:0 0 8px 8px;
+  }
+  .wallet-actions{display:flex;gap:8px;margin-top:20px;}
+  .wallet-actions .a{
+    flex:1;text-align:center;font-size:10px;color:var(--paper-dim);
+    background:var(--ink-2);border:1px solid var(--line);border-radius:8px;padding:10px 4px;
+  }
+  .mockup-tag{
+    text-align:center;margin-top:14px;font-size:10.5px;color:var(--paper-dim);
+    font-family:'IBM Plex Mono',monospace;letter-spacing:1px;
+  }
+
   footer{
     margin-top:60px;padding-top:24px;border-top:1px solid var(--line);
     display:flex;justify-content:space-between;font-size:12px;color:var(--paper-dim);
@@ -447,6 +511,68 @@
     </div>
   </section>
 
+  <section id="wallet-integration">
+    <div class="section-head">
+      <div class="eyebrow">02 / COMING TO GIWA WALLET</div>
+      <h2>Reputation, visible where it matters</h2>
+      <p>A score is only useful if people actually see it. This is designed to surface directly inside the GIWA Wallet — not live on a separate site nobody checks.</p>
+    </div>
+    <div class="wallet-showcase">
+      <div class="wallet-copy">
+        <div class="point">
+          <span class="num">01</span>
+          <p><strong>One glance, full context.</strong> Anyone interacting with a wallet sees the builder's level and score without leaving the app they're already in.</p>
+        </div>
+        <div class="point">
+          <span class="num">02</span>
+          <p><strong>No extra step for the builder.</strong> The badge reads directly from the same on-chain contract already live on GIWA Sepolia — nothing new to deploy or sync.</p>
+        </div>
+        <div class="point">
+          <span class="num">03</span>
+          <p><strong>Turns reputation into a habit.</strong> When the score is visible every time the wallet opens, earning attestations becomes part of how people build on GIWA — not a separate site they have to remember to check.</p>
+        </div>
+      </div>
+
+      <div>
+        <div class="phone-frame">
+          <div class="phone-screen">
+            <div class="phone-notch"></div>
+            <div class="wallet-header">
+              <div class="app-name">
+                <svg viewBox="0 0 40 30" xmlns="http://www.w3.org/2000/svg"><path d="M2 26 Q2 14 20 4 Q38 14 38 26 L34 26 Q34 16 20 9 Q6 16 6 26 Z" fill="#2f5580"/><circle cx="20" cy="9" r="2.5" fill="#c9a227"/></svg>
+                GIWA Wallet
+              </div>
+              <span class="net-pill">● Sepolia</span>
+            </div>
+            <div class="wallet-balance">
+              <div class="amt">2.418 ETH</div>
+              <div class="addr">0xA28e...6BC1</div>
+            </div>
+            <div class="rep-card">
+              <div class="top">
+                <span class="label">Builder Reputation</span>
+                <span class="badge-inline"><span class="dot">L2</span>Trusted Builder</span>
+              </div>
+              <div class="score-row">
+                <span class="n">24</span>
+                <span class="l">reputation score</span>
+              </div>
+              <div class="tiles-mini">
+                <div class="t"></div><div class="t"></div><div class="t"></div><div class="t"></div><div class="t"></div>
+              </div>
+            </div>
+            <div class="wallet-actions">
+              <div class="a">Send</div>
+              <div class="a">Receive</div>
+              <div class="a">Swap</div>
+            </div>
+          </div>
+        </div>
+        <div class="mockup-tag">CONCEPT MOCKUP — NOT AN OFFICIAL GIWA WALLET SCREEN</div>
+      </div>
+    </div>
+  </section>
+
   <section class="how-it-works">
     <h3>How the weight is calculated</h3>
     <div class="sub">Every attestation carries a weight based on the issuer's own reputation at the moment it's issued. New accounts start small — but every builder can grow their influence by earning attestations themselves.</div>
@@ -472,7 +598,7 @@
   <!-- ===== USE CASES ===== -->
   <section id="usecases">
     <div class="section-head">
-      <div class="eyebrow">02 / WHO IT'S FOR</div>
+      <div class="eyebrow">03 / WHO IT'S FOR</div>
       <h2>Built for real GIWA workflows</h2>
       <p>Trust infrastructure only matters if it plugs into how people actually work. Here's where a portable, weighted reputation score changes the equation.</p>
     </div>
@@ -507,7 +633,7 @@
   <!-- ===== LEADERBOARD ===== -->
   <section id="leaderboard-section">
     <div class="section-head">
-      <div class="eyebrow">03 / TOP BUILDERS</div>
+      <div class="eyebrow">04 / TOP BUILDERS</div>
       <h2>Leaderboard</h2>
       <p>Ranked by total reputation score, pulled live from the contract.</p>
     </div>
@@ -520,7 +646,7 @@
   </section>
 
   <div class="section-head" id="get-started">
-    <div class="eyebrow">04 / GET STARTED</div>
+    <div class="eyebrow">05 / GET STARTED</div>
     <h2>Try it yourself</h2>
   </div>
 
