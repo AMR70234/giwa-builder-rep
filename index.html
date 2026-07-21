@@ -4,6 +4,15 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>GIWA Builder Rep — On-chain reputation for builders</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 30'%3E%3Cpath d='M2 26 Q2 14 20 4 Q38 14 38 26 L34 26 Q34 16 20 9 Q6 16 6 26 Z' fill='%232f5580'/%3E%3Ccircle cx='20' cy='9' r='2.5' fill='%23c9a227'/%3E%3C/svg%3E" />
+<meta name="description" content="On-chain reputation for GIWA builders. Attestations are weighted automatically by the issuer's own reputation." />
+<meta property="og:title" content="GIWA Builder Rep — On-chain reputation for builders" />
+<meta property="og:description" content="Reputation, built one tile at a time. A weighted attestation system for the GIWA ecosystem." />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://giwa-builder-rep.vercel.app/" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="GIWA Builder Rep" />
+<meta name="twitter:description" content="On-chain reputation for GIWA builders — weighted attestations, not just a counter." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@600;700;900&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
@@ -124,6 +133,41 @@
     border-radius:0 3px 3px 0;font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--tile-glow);
   }
   @media(min-width:760px){.grid.cols-2{grid-template-columns:1fr 1fr;}}
+  .grid{display:grid;grid-template-columns:1fr;gap:20px;}
+
+  .my-profile{
+    display:none;margin-bottom:20px;padding:18px 22px;
+    background:linear-gradient(120deg, rgba(30,58,95,0.25), rgba(201,162,39,0.06));
+    border:1px solid var(--tile-light);border-radius:4px;
+    align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;
+  }
+  .my-profile.show{display:flex;}
+  .my-profile .left{display:flex;align-items:center;gap:14px;}
+  .my-profile .avatar{
+    width:38px;height:38px;border-radius:50%;
+    background:linear-gradient(160deg, var(--tile-light), var(--tile));
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Noto Serif KR',serif;font-weight:900;color:var(--paper);flex-shrink:0;
+  }
+  .my-profile .handle{font-weight:700;font-size:14px;}
+  .my-profile .sub{font-size:11.5px;color:var(--paper-dim);font-family:'IBM Plex Mono',monospace;}
+  .my-profile .score-pill{
+    background:var(--ink);border:1px solid var(--line);border-radius:20px;
+    padding:6px 16px;font-family:'IBM Plex Mono',monospace;font-size:12px;
+  }
+  .my-profile .score-pill b{color:var(--brass);font-size:15px;}
+  .my-profile.no-profile .left{color:var(--paper-dim);font-size:13px;}
+  .my-profile .cta-link{
+    color:var(--brass);font-size:12.5px;font-weight:600;text-decoration:none;
+    border-bottom:1px dotted var(--brass);cursor:pointer;
+  }
+
+  .spinner{
+    display:inline-block;width:12px;height:12px;border-radius:50%;
+    border:2px solid rgba(234,230,218,0.25);border-top-color:var(--tile-glow);
+    animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
 
   .card{
     background:var(--ink-2);border:1px solid var(--line);border-radius:4px;
@@ -213,6 +257,17 @@
   </header>
 
   <div id="networkWarn">⚠ You're on a different network — click here to switch to GIWA Sepolia</div>
+
+  <div class="my-profile" id="myProfile">
+    <div class="left">
+      <div class="avatar" id="myAvatar">?</div>
+      <div>
+        <div class="handle" id="myHandle">—</div>
+        <div class="sub" id="myAddress">—</div>
+      </div>
+    </div>
+    <div class="score-pill">Score: <b id="myScore">0</b></div>
+  </div>
 
   <section class="hero">
     <div class="eyebrow">GIWA BUILDER REP · 01 / TRUST INFRASTRUCTURE</div>
@@ -378,10 +433,37 @@ connectBtn.addEventListener('click', async () => {
     connectBtn.textContent = userAddress.slice(0,6) + '...' + userAddress.slice(-4);
     connectBtn.classList.add('connected');
     await checkNetwork();
+    await loadMyProfile();
   }catch(e){
     console.error(e);
   }
 });
+
+async function loadMyProfile(){
+  const el = document.getElementById('myProfile');
+  el.classList.add('show');
+  document.getElementById('myAddress').innerHTML = '<span class="spinner"></span>Loading...';
+
+  try{
+    const profile = await contract.profiles(userAddress);
+    const score = await contract.getScore(userAddress);
+
+    document.getElementById('myAddress').textContent = userAddress.slice(0,6) + '...' + userAddress.slice(-4);
+    document.getElementById('myScore').textContent = score.toString();
+
+    if(profile.exists){
+      el.classList.remove('no-profile');
+      document.getElementById('myHandle').textContent = profile.handle;
+      document.getElementById('myAvatar').textContent = profile.handle.charAt(0).toUpperCase();
+    } else {
+      el.classList.add('no-profile');
+      document.getElementById('myHandle').innerHTML = 'No profile yet — <a class="cta-link" onclick="document.getElementById(\'handleInput\').focus()">create one below ↓</a>';
+      document.getElementById('myAvatar').textContent = '—';
+    }
+  }catch(e){
+    console.error(e);
+  }
+}
 
 // Create profile
 document.getElementById('createProfileBtn').addEventListener('click', async () => {
@@ -398,6 +480,7 @@ document.getElementById('createProfileBtn').addEventListener('click', async () =
     showStatus(statusEl,'pending','⏳ Transaction sent, waiting for it to be mined...');
     await tx.wait();
     showStatus(statusEl,'success','✅ Profile created successfully!');
+    await loadMyProfile();
   }catch(e){
     showStatus(statusEl,'error','❌ ' + (e.reason || e.shortMessage || e.message));
   }
@@ -446,15 +529,15 @@ document.getElementById('lookupBtn').addEventListener('click', async () => {
 
     const listEl = document.getElementById('attestationsList');
     if(attestations.length === 0){
-      listEl.innerHTML = '<div class="attestation-item">No attestations found for this address yet.</div>';
+      listEl.innerHTML = '<div class="attestation-item"><span class="evidence-empty">No attestations found for this address yet.</span></div>';
     } else {
       listEl.innerHTML = attestations.map(a => `
         <div class="attestation-item">
           <div class="cat">${a.category}</div>
           <div class="meta">
-            from: ${a.issuer.slice(0,6)}...${a.issuer.slice(-4)}
+            from: <a href="https://sepolia-explorer.giwa.io/address/${a.issuer}" target="_blank" style="color:inherit">${a.issuer.slice(0,6)}...${a.issuer.slice(-4)} ↗</a>
             · weight: <span class="weight">${a.issuerWeight}</span>
-            · ${a.evidenceURI ? `<a href="${a.evidenceURI}" target="_blank" style="color:var(--tile-glow)">evidence ↗</a>` : 'no evidence'}
+            · ${a.evidenceURI ? `<a href="${a.evidenceURI}" target="_blank" style="color:var(--tile-glow)">evidence ↗</a>` : '<span class="evidence-empty">no evidence</span>'}
           </div>
         </div>
       `).join('');
