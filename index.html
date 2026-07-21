@@ -415,6 +415,28 @@
     font-family:'IBM Plex Mono',monospace;letter-spacing:1px;
   }
 
+  /* ===== How to try this ===== */
+  .howto-steps{display:grid;grid-template-columns:1fr;gap:14px;margin-top:24px;}
+  @media(min-width:700px){.howto-steps{grid-template-columns:repeat(4,1fr);}}
+  .howto-step{
+    background:var(--ink-2);border:1px solid var(--line);border-radius:4px;
+    padding:20px;position:relative;
+  }
+  .howto-step .step-n{
+    font-family:'Noto Serif KR',serif;font-weight:900;font-size:22px;color:var(--brass);
+    display:block;margin-bottom:10px;
+  }
+  .howto-step h5{font-size:13.5px;margin:0 0 8px;font-weight:700;}
+  .howto-step p{font-size:12px;color:var(--paper-dim);line-height:1.6;margin:0 0 12px;}
+  .howto-step a.step-link, .howto-step button.step-link{
+    display:inline-block;font-size:11.5px;font-weight:700;color:var(--tile-glow);
+    text-decoration:none;border-bottom:1px dotted var(--tile-glow);
+    background:none;border-top:none;border-left:none;border-right:none;
+    padding:0;cursor:pointer;font-family:'Inter',sans-serif;
+  }
+  .howto-step a.step-link:hover, .howto-step button.step-link:hover{color:var(--brass);border-color:var(--brass);}
+  .howto-step .step-done{font-size:11.5px;color:var(--good);font-weight:600;}
+
   footer{
     margin-top:60px;padding-top:24px;border-top:1px solid var(--line);
     display:flex;justify-content:space-between;font-size:12px;color:var(--paper-dim);
@@ -645,8 +667,42 @@
     </div>
   </section>
 
+  <section>
+    <div class="section-head">
+      <div class="eyebrow">05 / HOW TO TRY THIS</div>
+      <h2>New to GIWA? Start here</h2>
+      <p>Everything below runs on GIWA Sepolia testnet — no real funds needed. Four steps and you're ready to create a profile.</p>
+    </div>
+    <div class="howto-steps">
+      <div class="howto-step">
+        <span class="step-n">01</span>
+        <h5>Get a wallet</h5>
+        <p>Install MetaMask if you don't have it yet — it's free and takes about a minute.</p>
+        <a class="step-link" href="https://metamask.io" target="_blank">Get MetaMask ↗</a>
+      </div>
+      <div class="howto-step">
+        <span class="step-n">02</span>
+        <h5>Add GIWA Sepolia</h5>
+        <p>One click adds the network to your wallet — no manual entry needed.</p>
+        <button class="step-link" id="addNetworkBtn">Add network to MetaMask</button>
+      </div>
+      <div class="howto-step">
+        <span class="step-n">03</span>
+        <h5>Claim test ETH</h5>
+        <p>Free from the official faucet — just enough to cover gas for a profile and an attestation.</p>
+        <a class="step-link" href="https://faucet.giwa.io" target="_blank">Open faucet ↗</a>
+      </div>
+      <div class="howto-step">
+        <span class="step-n">04</span>
+        <h5>Create your profile</h5>
+        <p>Connect your wallet above and you're ready to go.</p>
+        <a class="step-link" href="#get-started">Jump to profile ↓</a>
+      </div>
+    </div>
+  </section>
+
   <div class="section-head" id="get-started">
-    <div class="eyebrow">05 / GET STARTED</div>
+    <div class="eyebrow">06 / GET STARTED</div>
     <h2>Try it yourself</h2>
   </div>
 
@@ -764,7 +820,11 @@ async function checkNetwork(){
   }
 }
 
-networkWarn.addEventListener('click', async () => {
+async function switchOrAddGiwaNetwork(){
+  if(!window.ethereum){
+    alert('You need to install MetaMask first: https://metamask.io');
+    return;
+  }
   try{
     await window.ethereum.request({
       method:'wallet_switchEthereumChain',
@@ -785,7 +845,19 @@ networkWarn.addEventListener('click', async () => {
     }
   }
   checkNetwork();
-});
+}
+
+networkWarn.addEventListener('click', switchOrAddGiwaNetwork);
+
+const addNetworkBtn = document.getElementById('addNetworkBtn');
+if(addNetworkBtn){
+  addNetworkBtn.addEventListener('click', async () => {
+    addNetworkBtn.textContent = 'Adding...';
+    await switchOrAddGiwaNetwork();
+    addNetworkBtn.textContent = '✓ Added';
+    setTimeout(() => { addNetworkBtn.textContent = 'Add network to MetaMask'; }, 3000);
+  });
+}
 
 connectBtn.addEventListener('click', async () => {
   if(!window.ethereum){
