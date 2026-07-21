@@ -76,7 +76,7 @@ Then open the local URL in a browser with MetaMask installed, connected to GIWA 
 
 ## Roadmap
 
-- ~~Concept mockup of the reputation badge inside GIWA Wallet~~ ✅ live on the site — see the "Coming to GIWA Wallet" section
+- ✅ Concept mockup of the reputation badge inside GIWA Wallet — see the "Coming to GIWA Wallet" section
 - Staking on attestations (slashed if proven false)
 - Real integration inside the GIWA Wallet (not just a mockup)
 - Public API for other GIWA projects to query builder reputation
