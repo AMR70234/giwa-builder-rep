@@ -73,5 +73,5 @@ A solo builder with a web development background, learning and applying Web3 dev
 
 ## Links
 - **Contract on Explorer:** https://sepolia-explorer.giwa.io/address/0x2b3176f8D3d0C5D1D58e662c5a7180E4E9fEf71B
-- **Live site (Frontend):** [add hosting link here once deployed]
-- **Source code:** [add GitHub link here once uploaded]
+- **Live site (Frontend):** https://giwa-builder-rep.vercel.app/
+- **Source code:** https://github.com/AMR70234/giwa-builder-rep

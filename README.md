@@ -2,7 +2,7 @@
 
 On-chain reputation for builders in the GIWA ecosystem. Attestations are weighted automatically by the issuer's own reputation — a vouch from a trusted builder counts more than one from a brand-new account.
 
-**Live demo:** [add Vercel link here]
+**Live demo:** [giwa-builder-rep.vercel.app](https://giwa-builder-rep.vercel.app/)
 **Contract (GIWA Sepolia):** [`0x2b3176f8D3d0C5D1D58e662c5a7180E4E9fEf71B`](https://sepolia-explorer.giwa.io/address/0x2b3176f8D3d0C5D1D58e662c5a7180E4E9fEf71B)
 
 ---
