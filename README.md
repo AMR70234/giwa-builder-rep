@@ -5,6 +5,8 @@
 
 On-chain reputation for builders in the GIWA ecosystem. Attestations are weighted automatically by the issuer's own reputation — a vouch from a trusted builder counts more than one from a brand-new account.
 
+**Status:** live on GIWA Sepolia with real profiles and attestations already on-chain — not just a deployed contract sitting empty.
+
 **Live demo:** [giwa-builder-rep.vercel.app](https://giwa-builder-rep.vercel.app/)
 **Contract (GIWA Sepolia):** [`0x2b3176f8D3d0C5D1D58e662c5a7180E4E9fEf71B`](https://sepolia-explorer.giwa.io/address/0x2b3176f8D3d0C5D1D58e662c5a7180E4E9fEf71B)
 
@@ -74,8 +76,9 @@ Then open the local URL in a browser with MetaMask installed, connected to GIWA 
 
 ## Roadmap
 
+- ~~Concept mockup of the reputation badge inside GIWA Wallet~~ ✅ live on the site — see the "Coming to GIWA Wallet" section
 - Staking on attestations (slashed if proven false)
-- Direct badge integration inside the GIWA Wallet
+- Real integration inside the GIWA Wallet (not just a mockup)
 - Public API for other GIWA projects to query builder reputation
 
 ## Built for
