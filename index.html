@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>GIWA Builder Rep — On-chain reputation for builders</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@600;700;900&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
+<style>
+  :root{
+    --ink:#0a0b0d;
+    --ink-2:#12141a;
+    --tile:#1e3a5f;
+    --tile-light:#2f5580;
+    --tile-glow:#4a7bab;
+    --brass:#c9a227;
+    --paper:#eae6da;
+    --paper-dim:#a8a294;
+    --line: rgba(234,230,218,0.12);
+    --danger:#b5453f;
+    --good:#4f8f6b;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(30,58,95,0.35), transparent),
+      var(--ink);
+    color:var(--paper);
+    font-family:'Inter', sans-serif;
+    min-height:100vh;
+    position:relative;
+    overflow-x:hidden;
+  }
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    opacity:0.05;
+    background-image: radial-gradient(circle at 10px 10px, var(--tile-light) 3px, transparent 3.5px);
+    background-size: 40px 24px;
+    z-index:0;
+  }
+  .wrap{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:28px 20px 80px;}
+
+  header{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:18px 0 34px;border-bottom:1px solid var(--line);margin-bottom:40px;
+  }
+  .brand{display:flex;align-items:center;gap:12px;}
+  .brand .roof{width:30px;height:22px;flex-shrink:0;}
+  .brand h1{
+    font-family:'Noto Serif KR',serif;font-weight:900;font-size:20px;
+    letter-spacing:0.5px;margin:0;color:var(--paper);
+  }
+  .brand small{display:block;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--paper-dim);letter-spacing:1px;margin-top:2px;}
+
+  #connectBtn{
+    background:var(--tile);color:var(--paper);border:1px solid var(--tile-light);
+    padding:10px 20px;border-radius:3px;font-family:'Inter',sans-serif;
+    font-weight:600;font-size:13px;cursor:pointer;transition:all .2s;
+  }
+  #connectBtn:hover{background:var(--tile-light);box-shadow:0 0 0 3px rgba(74,123,171,0.15);}
+  #connectBtn.connected{background:transparent;border-color:var(--good);color:var(--good);cursor:default;}
+  #networkWarn{
+    display:none;background:var(--danger);color:#fff;text-align:center;
+    padding:10px;font-size:13px;border-radius:3px;margin-bottom:20px;font-weight:600;cursor:pointer;
+  }
+
+  .hero{margin-bottom:56px;}
+  .hero .eyebrow{
+    font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:3px;
+    color:var(--brass);text-transform:uppercase;margin-bottom:14px;
+  }
+  .hero h2{
+    font-family:'Noto Serif KR',serif;font-weight:900;font-size:clamp(30px,4.5vw,48px);
+    line-height:1.2;margin:0 0 16px;color:var(--paper);
+  }
+  .hero p{color:var(--paper-dim);font-size:15px;line-height:1.9;max-width:640px;}
+
+  .roof-visual{
+    display:flex;justify-content:center;margin:40px 0 8px;
+    perspective:800px;
+  }
+  .roof-tiles{display:flex;flex-direction:column-reverse;align-items:center;gap:2px;}
+  .tile-row{display:flex;gap:3px;}
+  .tile{
+    width:26px;height:16px;
+    background:linear-gradient(160deg, var(--tile-light), var(--tile));
+    border-radius:0 0 13px 13px/0 0 16px 16px;
+    box-shadow: inset 0 -2px 4px rgba(0,0,0,0.4), 0 1px 0 rgba(255,255,255,0.06);
+    opacity:0;
+    animation: settle .5s ease forwards;
+  }
+  @keyframes settle{
+    from{opacity:0;transform:translateY(-8px);}
+    to{opacity:1;transform:translateY(0);}
+  }
+
+  .grid{display:grid;grid-template-columns:1fr;gap:20px;}
+  @media(min-width:760px){.grid.cols-2{grid-template-columns:1fr 1fr;}}
+
+  .card{
+    background:var(--ink-2);border:1px solid var(--line);border-radius:4px;
+    padding:26px 24px;position:relative;
+  }
+  .card::before{
+    content:"";position:absolute;top:-1px;left:20px;width:36px;height:8px;
+    background:var(--tile);border-radius:0 0 18px 18px;
+  }
+  .card .num{
+    font-family:'IBM Plex Mono',monospace;color:var(--brass);font-size:11px;
+    letter-spacing:2px;margin-bottom:6px;display:block;
+  }
+  .card h3{
+    font-family:'Noto Serif KR',serif;font-weight:700;font-size:19px;margin:0 0 6px;
+  }
+  .card .desc{color:var(--paper-dim);font-size:13px;margin-bottom:18px;line-height:1.7;}
+
+  label{display:block;font-size:12px;color:var(--paper-dim);margin-bottom:6px;margin-top:14px;font-weight:600;}
+  label:first-of-type{margin-top:0;}
+  input, select{
+    width:100%;background:var(--ink);border:1px solid var(--line);color:var(--paper);
+    padding:11px 12px;border-radius:3px;font-family:'Inter',sans-serif;
+    font-size:14px;transition:border-color .2s;
+  }
+  input:focus, select:focus{outline:none;border-color:var(--tile-light);}
+  input::placeholder{color:var(--paper-dim);opacity:0.5;}
+
+  button.action{
+    width:100%;margin-top:20px;background:var(--brass);color:var(--ink);
+    border:none;padding:13px;border-radius:3px;font-weight:700;font-size:14px;
+    cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;
+  }
+  button.action:hover{filter:brightness(1.1);}
+  button.action:disabled{background:var(--paper-dim);cursor:not-allowed;filter:none;}
+
+  .status{
+    margin-top:12px;font-size:12.5px;font-family:'IBM Plex Mono',monospace;
+    padding:10px 12px;border-radius:3px;display:none;line-height:1.6;word-break:break-all;
+  }
+  .status.show{display:block;}
+  .status.pending{background:rgba(74,123,171,0.12);color:var(--tile-glow);border:1px solid rgba(74,123,171,0.3);}
+  .status.success{background:rgba(79,143,107,0.12);color:var(--good);border:1px solid rgba(79,143,107,0.3);}
+  .status.error{background:rgba(181,69,63,0.12);color:#e0837e;border:1px solid rgba(181,69,63,0.3);}
+
+  .lookup-result{margin-top:20px;display:none;}
+  .lookup-result.show{display:block;}
+  .score-display{
+    display:flex;align-items:baseline;gap:10px;padding:18px;
+    background:var(--ink);border-radius:3px;margin-bottom:16px;border:1px solid var(--line);
+  }
+  .score-display .num-big{font-family:'Noto Serif KR',serif;font-weight:900;font-size:40px;color:var(--brass);}
+  .score-display .label{color:var(--paper-dim);font-size:13px;}
+
+  .attestation-item{
+    padding:14px;border-left:2px solid var(--tile);background:var(--ink);
+    border-radius:0 3px 3px 0;margin-bottom:10px;font-size:13px;
+  }
+  .attestation-item .cat{font-weight:700;color:var(--paper);margin-bottom:4px;}
+  .attestation-item .meta{color:var(--paper-dim);font-size:11.5px;font-family:'IBM Plex Mono',monospace;}
+  .attestation-item .weight{color:var(--brass);font-weight:600;}
+
+  footer{
+    margin-top:60px;padding-top:24px;border-top:1px solid var(--line);
+    display:flex;justify-content:space-between;font-size:12px;color:var(--paper-dim);
+    font-family:'IBM Plex Mono',monospace;flex-wrap:wrap;gap:10px;
+  }
+  footer a{color:var(--tile-glow);text-decoration:none;}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header>
+    <div class="brand">
+      <svg class="roof" viewBox="0 0 40 30" xmlns="http://www.w3.org/2000/svg">
+        <path d="M2 26 Q2 14 20 4 Q38 14 38 26 L34 26 Q34 16 20 9 Q6 16 6 26 Z" fill="#2f5580"/>
+        <circle cx="20" cy="9" r="2.5" fill="#c9a227"/>
+      </svg>
+      <div>
+        <h1>GIWA Builder Rep</h1>
+        <small>ON-CHAIN REPUTATION · WEIGHTED ATTESTATIONS</small>
+      </div>
+    </div>
+    <button id="connectBtn">Connect Wallet</button>
+  </header>
+
+  <div id="networkWarn">⚠ You're on a different network — click here to switch to GIWA Sepolia</div>
+
+  <section class="hero">
+    <div class="eyebrow">GIWA BUILDER REP · 01 / TRUST INFRASTRUCTURE</div>
+    <h2>Reputation, built<br/>one tile at a time.</h2>
+    <p>
+      Like tiles stacking into a roof, each attestation adds a layer to your reputation.
+      But not every layer counts the same — a vouch from a trusted builder carries more weight than one from a brand-new account.
+    </p>
+    <div class="roof-visual">
+      <div class="roof-tiles" id="roofViz">
+        <div class="tile-row"><div class="tile" style="animation-delay:.05s"></div><div class="tile" style="animation-delay:.1s"></div><div class="tile" style="animation-delay:.15s"></div></div>
+        <div class="tile-row"><div class="tile" style="animation-delay:.2s"></div><div class="tile" style="animation-delay:.25s"></div></div>
+        <div class="tile-row"><div class="tile" style="animation-delay:.3s"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="grid cols-2">
+
+    <div class="card">
+      <span class="num">01 — PROFILE</span>
+      <h3>Create your profile</h3>
+      <div class="desc">You need a profile before you can issue or receive any attestation.</div>
+      <label>Handle</label>
+      <input id="handleInput" placeholder="alex.giwa" />
+      <label>Metadata URI (optional)</label>
+      <input id="metaInput" placeholder="ipfs://... or a portfolio link" />
+      <button class="action" id="createProfileBtn">Create Profile</button>
+      <div class="status" id="profileStatus"></div>
+    </div>
+
+    <div class="card">
+      <span class="num">02 — ATTEST</span>
+      <h3>Issue an attestation</h3>
+      <div class="desc">Weight is calculated automatically from your current reputation.</div>
+      <label>Subject wallet address</label>
+      <input id="subjectInput" placeholder="0x..." />
+      <label>Category</label>
+      <select id="categoryInput">
+        <option>Reliable Developer</option>
+        <option>Good Collaborator</option>
+        <option>Delivered Project</option>
+        <option>Security Conscious</option>
+        <option>Community Contributor</option>
+      </select>
+      <label>Evidence URI</label>
+      <input id="evidenceInput" placeholder="Link to GitHub PR / shipped project..." />
+      <button class="action" id="attestBtn">Issue Attestation</button>
+      <div class="status" id="attestStatus"></div>
+    </div>
+
+  </div>
+
+  <div class="card" style="margin-top:20px;">
+    <span class="num">03 — LOOK UP</span>
+    <h3>Look up a reputation</h3>
+    <div class="desc">Search a wallet address to see its attestations and total score.</div>
+    <label>Wallet address</label>
+    <input id="lookupInput" placeholder="0x..." />
+    <button class="action" id="lookupBtn">Look Up</button>
+    <div class="status" id="lookupStatus"></div>
+
+    <div class="lookup-result" id="lookupResult">
+      <div class="score-display">
+        <span class="num-big" id="scoreNum">0</span>
+        <span class="label">Total Reputation Score</span>
+      </div>
+      <div id="attestationsList"></div>
+    </div>
+  </div>
+
+  <footer>
+    <span>Contract: <a href="https://sepolia-explorer.giwa.io/address/0x2b3176f8D3d0C5D1D58e662c5a7180E4E9fEf71B" target="_blank">0x2b31...f71B ↗</a></span>
+    <span>GIWA Sepolia · Chain ID 91342</span>
+  </footer>
+
+</div>
+
+<script>
+const CONTRACT_ADDRESS = "0x2b3176f8D3d0C5D1D58e662c5a7180E4E9fEf71B";
+const GIWA_CHAIN_ID = 91342;
+const GIWA_CHAIN_ID_HEX = "0x" + GIWA_CHAIN_ID.toString(16);
+
+const ABI = [{"inputs": [], "name": "CannotAttestSelf", "type": "error"}, {"inputs": [], "name": "EmptyHandle", "type": "error"}, {"inputs": [], "name": "ProfileAlreadyExists", "type": "error"}, {"inputs": [], "name": "ProfileDoesNotExist", "type": "error"}, {"anonymous": false, "inputs": [{"indexed": true, "internalType": "address", "name": "issuer", "type": "address"}, {"indexed": true, "internalType": "address", "name": "subject", "type": "address"}, {"indexed": false, "internalType": "string", "name": "category", "type": "string"}, {"indexed": false, "internalType": "uint256", "name": "issuerWeight", "type": "uint256"}, {"indexed": false, "internalType": "uint256", "name": "timestamp", "type": "uint256"}], "name": "AttestationIssued", "type": "event"}, {"anonymous": false, "inputs": [{"indexed": true, "internalType": "address", "name": "user", "type": "address"}, {"indexed": false, "internalType": "string", "name": "handle", "type": "string"}, {"indexed": false, "internalType": "uint256", "name": "timestamp", "type": "uint256"}], "name": "ProfileCreated", "type": "event"}, {"inputs": [], "name": "BASE_WEIGHT", "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}], "stateMutability": "view", "type": "function"}, {"inputs": [], "name": "MAX_ISSUER_WEIGHT", "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}], "stateMutability": "view", "type": "function"}, {"inputs": [{"internalType": "string", "name": "handle", "type": "string"}, {"internalType": "string", "name": "metadataURI", "type": "string"}], "name": "createProfile", "outputs": [], "stateMutability": "nonpayable", "type": "function"}, {"inputs": [{"internalType": "address", "name": "subject", "type": "address"}], "name": "getAttestationCount", "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}], "stateMutability": "view", "type": "function"}, {"inputs": [{"internalType": "address", "name": "subject", "type": "address"}], "name": "getAttestations", "outputs": [{"components": [{"internalType": "address", "name": "issuer", "type": "address"}, {"internalType": "address", "name": "subject", "type": "address"}, {"internalType": "string", "name": "category", "type": "string"}, {"internalType": "string", "name": "evidenceURI", "type": "string"}, {"internalType": "uint256", "name": "issuerWeight", "type": "uint256"}, {"internalType": "uint256", "name": "timestamp", "type": "uint256"}], "internalType": "struct GiwaBuilderRep.Attestation[]", "name": "", "type": "tuple[]"}], "stateMutability": "view", "type": "function"}, {"inputs": [{"internalType": "address", "name": "subject", "type": "address"}], "name": "getScore", "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}], "stateMutability": "view", "type": "function"}, {"inputs": [{"internalType": "address", "name": "subject", "type": "address"}, {"internalType": "string", "name": "category", "type": "string"}, {"internalType": "string", "name": "evidenceURI", "type": "string"}], "name": "issueAttestation", "outputs": [], "stateMutability": "nonpayable", "type": "function"}, {"inputs": [{"internalType": "address", "name": "", "type": "address"}], "name": "profiles", "outputs": [{"internalType": "string", "name": "handle", "type": "string"}, {"internalType": "string", "name": "metadataURI", "type": "string"}, {"internalType": "uint256", "name": "createdAt", "type": "uint256"}, {"internalType": "bool", "name": "exists", "type": "bool"}], "stateMutability": "view", "type": "function"}, {"inputs": [{"internalType": "address", "name": "", "type": "address"}], "name": "rawScore", "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}], "stateMutability": "view", "type": "function"}];
+
+let provider, signer, contract, userAddress;
+
+const connectBtn = document.getElementById('connectBtn');
+const networkWarn = document.getElementById('networkWarn');
+
+function showStatus(el, type, msg){
+  el.className = 'status show ' + type;
+  el.textContent = msg;
+}
+
+async function checkNetwork(){
+  if(!window.ethereum) return;
+  const chainId = await window.ethereum.request({method:'eth_chainId'});
+  if(chainId !== GIWA_CHAIN_ID_HEX){
+    networkWarn.style.display = 'block';
+  } else {
+    networkWarn.style.display = 'none';
+  }
+}
+
+networkWarn.addEventListener('click', async () => {
+  try{
+    await window.ethereum.request({
+      method:'wallet_switchEthereumChain',
+      params:[{chainId: GIWA_CHAIN_ID_HEX}]
+    });
+  }catch(e){
+    if(e.code === 4902){
+      await window.ethereum.request({
+        method:'wallet_addEthereumChain',
+        params:[{
+          chainId: GIWA_CHAIN_ID_HEX,
+          chainName:'GIWA Sepolia',
+          rpcUrls:['https://sepolia-rpc.giwa.io'],
+          nativeCurrency:{name:'ETH',symbol:'ETH',decimals:18},
+          blockExplorerUrls:['https://sepolia-explorer.giwa.io']
+        }]
+      });
+    }
+  }
+  checkNetwork();
+});
+
+connectBtn.addEventListener('click', async () => {
+  if(!window.ethereum){
+    alert('You need to install MetaMask first: https://metamask.io');
+    return;
+  }
+  try{
+    await window.ethereum.request({method:'eth_requestAccounts'});
+    provider = new ethers.BrowserProvider(window.ethereum);
+    signer = await provider.getSigner();
+    userAddress = await signer.getAddress();
+    contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+
+    connectBtn.textContent = userAddress.slice(0,6) + '...' + userAddress.slice(-4);
+    connectBtn.classList.add('connected');
+    await checkNetwork();
+  }catch(e){
+    console.error(e);
+  }
+});
+
+// Create profile
+document.getElementById('createProfileBtn').addEventListener('click', async () => {
+  const statusEl = document.getElementById('profileStatus');
+  if(!contract){ showStatus(statusEl,'error','Connect your wallet first'); return; }
+
+  const handle = document.getElementById('handleInput').value.trim();
+  const meta = document.getElementById('metaInput').value.trim();
+  if(!handle){ showStatus(statusEl,'error','Handle is required'); return; }
+
+  try{
+    showStatus(statusEl,'pending','⏳ Waiting for transaction confirmation...');
+    const tx = await contract.createProfile(handle, meta);
+    showStatus(statusEl,'pending','⏳ Transaction sent, waiting for it to be mined...');
+    await tx.wait();
+    showStatus(statusEl,'success','✅ Profile created successfully!');
+  }catch(e){
+    showStatus(statusEl,'error','❌ ' + (e.reason || e.shortMessage || e.message));
+  }
+});
+
+// Issue attestation
+document.getElementById('attestBtn').addEventListener('click', async () => {
+  const statusEl = document.getElementById('attestStatus');
+  if(!contract){ showStatus(statusEl,'error','Connect your wallet first'); return; }
+
+  const subject = document.getElementById('subjectInput').value.trim();
+  const category = document.getElementById('categoryInput').value;
+  const evidence = document.getElementById('evidenceInput').value.trim();
+
+  if(!ethers.isAddress(subject)){ showStatus(statusEl,'error','Invalid wallet address'); return; }
+
+  try{
+    showStatus(statusEl,'pending','⏳ Waiting for transaction confirmation...');
+    const tx = await contract.issueAttestation(subject, category, evidence);
+    showStatus(statusEl,'pending','⏳ Transaction sent, waiting for it to be mined...');
+    await tx.wait();
+    showStatus(statusEl,'success','✅ Attestation issued successfully!');
+  }catch(e){
+    showStatus(statusEl,'error','❌ ' + (e.reason || e.shortMessage || e.message));
+  }
+});
+
+// Look up a profile
+document.getElementById('lookupBtn').addEventListener('click', async () => {
+  const statusEl = document.getElementById('lookupStatus');
+  const resultEl = document.getElementById('lookupResult');
+  const address = document.getElementById('lookupInput').value.trim();
+
+  if(!ethers.isAddress(address)){ showStatus(statusEl,'error','Invalid wallet address'); return; }
+
+  // Works even without a connected wallet, via a public RPC
+  const readProvider = provider || new ethers.JsonRpcProvider('https://sepolia-rpc.giwa.io');
+  const readContract = new ethers.Contract(CONTRACT_ADDRESS, ABI, readProvider);
+
+  try{
+    showStatus(statusEl,'pending','⏳ Looking up...');
+    const score = await readContract.getScore(address);
+    const attestations = await readContract.getAttestations(address);
+
+    document.getElementById('scoreNum').textContent = score.toString();
+
+    const listEl = document.getElementById('attestationsList');
+    if(attestations.length === 0){
+      listEl.innerHTML = '<div class="attestation-item">No attestations found for this address yet.</div>';
+    } else {
+      listEl.innerHTML = attestations.map(a => `
+        <div class="attestation-item">
+          <div class="cat">${a.category}</div>
+          <div class="meta">
+            from: ${a.issuer.slice(0,6)}...${a.issuer.slice(-4)}
+            · weight: <span class="weight">${a.issuerWeight}</span>
+            · ${a.evidenceURI ? `<a href="${a.evidenceURI}" target="_blank" style="color:var(--tile-glow)">evidence ↗</a>` : 'no evidence'}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    resultEl.classList.add('show');
+    statusEl.classList.remove('show');
+  }catch(e){
+    showStatus(statusEl,'error','❌ ' + (e.reason || e.shortMessage || e.message));
+  }
+});
+
+// Reload if the wallet account or network changes
+if(window.ethereum){
+  window.ethereum.on('accountsChanged', () => window.location.reload());
+  window.ethereum.on('chainChanged', () => window.location.reload());
+}
+</script>
+
+</body>
+</html>
