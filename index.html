@@ -511,6 +511,15 @@ const ABI = [{"inputs": [], "name": "CannotAttestSelf", "type": "error"}, {"inpu
 
 let provider, signer, contract, userAddress;
 
+// A single shared read-only provider with a static network config.
+// This avoids ethers repeatedly trying to "detect" the network on every call,
+// which is what causes the console spam / retry loop on rate-limited public RPCs.
+const READ_ONLY_PROVIDER = new ethers.JsonRpcProvider(
+  'https://sepolia-rpc.giwa.io',
+  { chainId: GIWA_CHAIN_ID, name: 'giwa-sepolia' },
+  { staticNetwork: true }
+);
+
 const connectBtn = document.getElementById('connectBtn');
 const networkWarn = document.getElementById('networkWarn');
 
@@ -661,7 +670,7 @@ document.getElementById('lookupBtn').addEventListener('click', async () => {
   if(!ethers.isAddress(address)){ showStatus(statusEl,'error','Invalid wallet address'); return; }
 
   // Works even without a connected wallet, via a public RPC
-  const readProvider = provider || new ethers.JsonRpcProvider('https://sepolia-rpc.giwa.io');
+  const readProvider = provider || READ_ONLY_PROVIDER;
   const readContract = new ethers.Contract(CONTRACT_ADDRESS, ABI, readProvider);
 
   try{
@@ -718,12 +727,17 @@ renderLevelsStrip();
 // ===== Leaderboard =====
 async function loadLeaderboard(){
   const body = document.getElementById('leaderboardBody');
-  const readProvider = provider || new ethers.JsonRpcProvider('https://sepolia-rpc.giwa.io');
+  const readProvider = provider || READ_ONLY_PROVIDER;
   const readContract = new ethers.Contract(CONTRACT_ADDRESS, ABI, readProvider);
+
+  const timeout = (ms) => new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), ms));
 
   try{
     const filter = readContract.filters.ProfileCreated();
-    const events = await readContract.queryFilter(filter, 0, 'latest');
+    const events = await Promise.race([
+      readContract.queryFilter(filter, 0, 'latest'),
+      timeout(15000)
+    ]);
 
     if(events.length === 0){
       body.innerHTML = '<div class="lb-empty">No builders have created a profile yet — be the first below.</div>';
@@ -767,7 +781,7 @@ async function loadLeaderboard(){
     `;
   }catch(e){
     console.error(e);
-    body.innerHTML = '<div class="lb-empty">Couldn\'t load the leaderboard right now. Try refreshing.</div>';
+    body.innerHTML = '<div class="lb-empty">Couldn\'t reach the network right now. <a class="cta-link" onclick="loadLeaderboard()">Try again</a></div>';
   }
 }
 loadLeaderboard();
