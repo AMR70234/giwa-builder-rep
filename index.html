@@ -99,7 +99,30 @@
     to{opacity:1;transform:translateY(0);}
   }
 
-  .grid{display:grid;grid-template-columns:1fr;gap:20px;}
+  .how-it-works{
+    margin-bottom:56px;padding:28px 24px;background:var(--ink-2);
+    border:1px solid var(--line);border-radius:4px;
+  }
+  .how-it-works h3{
+    font-family:'Noto Serif KR',serif;font-weight:700;font-size:18px;margin:0 0 8px;
+  }
+  .how-it-works .sub{color:var(--paper-dim);font-size:13px;margin-bottom:22px;line-height:1.7;max-width:600px;}
+  .weight-examples{display:grid;grid-template-columns:1fr;gap:12px;}
+  @media(min-width:700px){.weight-examples{grid-template-columns:repeat(3,1fr);}}
+  .weight-ex{
+    background:var(--ink);border:1px solid var(--line);border-radius:3px;padding:16px;
+  }
+  .weight-ex .issuer-score{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--paper-dim);margin-bottom:10px;}
+  .weight-ex .arrow{color:var(--paper-dim);margin:0 6px;}
+  .weight-ex .result{
+    display:flex;align-items:baseline;gap:8px;
+  }
+  .weight-ex .result .w{font-family:'Noto Serif KR',serif;font-weight:900;font-size:28px;color:var(--brass);}
+  .weight-ex .result .label{font-size:11.5px;color:var(--paper-dim);}
+  .formula-box{
+    margin-top:20px;padding:14px 16px;background:var(--ink);border-left:2px solid var(--tile);
+    border-radius:0 3px 3px 0;font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--tile-glow);
+  }
   @media(min-width:760px){.grid.cols-2{grid-template-columns:1fr 1fr;}}
 
   .card{
@@ -205,6 +228,28 @@
         <div class="tile-row"><div class="tile" style="animation-delay:.3s"></div></div>
       </div>
     </div>
+  </section>
+
+  <section class="how-it-works">
+    <h3>How the weight is calculated</h3>
+    <div class="sub">Every attestation carries a weight based on the issuer's own reputation at the moment it's issued. New accounts start small — but every builder can grow their influence by earning attestations themselves.</div>
+
+    <div class="weight-examples">
+      <div class="weight-ex">
+        <div class="issuer-score">ISSUER SCORE: 0 (brand new)</div>
+        <div class="result"><span class="w">1</span><span class="label">weight per attestation</span></div>
+      </div>
+      <div class="weight-ex">
+        <div class="issuer-score">ISSUER SCORE: 40</div>
+        <div class="result"><span class="w">5</span><span class="label">weight per attestation</span></div>
+      </div>
+      <div class="weight-ex">
+        <div class="issuer-score">ISSUER SCORE: 990+</div>
+        <div class="result"><span class="w">100</span><span class="label">weight per attestation (capped)</span></div>
+      </div>
+    </div>
+
+    <div class="formula-box">issuerWeight = 1 + floor(issuerScore ÷ 10) — capped at 100</div>
   </section>
 
   <div class="grid cols-2">
