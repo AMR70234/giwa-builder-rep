@@ -821,6 +821,29 @@ function renderLevelsStrip(){
 renderLevelsStrip();
 
 // ===== Leaderboard =====
+async function fetchAllEvents(readContract, readProvider, filter){
+  // Try a single full-range query first — works fine on RPCs without a strict block-range limit.
+  try{
+    return await readContract.queryFilter(filter, 0, 'latest');
+  }catch(e){
+    // Fallback: the RPC likely rejected the range. Query in smaller chunks instead,
+    // walking backwards from the latest block over a generous recent window.
+    const latest = await readProvider.getBlockNumber();
+    const CHUNK = 2000;
+    const WINDOW = 300000; // ~3.5 days of coverage at ~1s block time — generous for a fresh testnet deploy
+    const fromBlock = Math.max(0, latest - WINDOW);
+    let results = [];
+    for(let start = fromBlock; start <= latest; start += CHUNK){
+      const end = Math.min(start + CHUNK - 1, latest);
+      try{
+        const chunkResults = await readContract.queryFilter(filter, start, end);
+        results = results.concat(chunkResults);
+      }catch(_){ /* skip a problematic chunk rather than failing the whole load */ }
+    }
+    return results;
+  }
+}
+
 async function loadLeaderboard(){
   const body = document.getElementById('leaderboardBody');
   const readProvider = provider || READ_ONLY_PROVIDER;
@@ -833,10 +856,10 @@ async function loadLeaderboard(){
     const attestFilter = readContract.filters.AttestationIssued();
     const [events, attestEvents] = await Promise.race([
       Promise.all([
-        readContract.queryFilter(filter, 0, 'latest'),
-        readContract.queryFilter(attestFilter, 0, 'latest')
+        fetchAllEvents(readContract, readProvider, filter),
+        fetchAllEvents(readContract, readProvider, attestFilter)
       ]),
-      timeout(15000)
+      timeout(30000)
     ]);
 
     document.getElementById('statBuilders').textContent = new Set(events.map(e => e.args.user)).size;
