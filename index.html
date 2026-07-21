@@ -415,25 +415,6 @@
     font-family:'IBM Plex Mono',monospace;letter-spacing:1px;
   }
 
-  .about-builder{
-    margin:64px 0 0;padding:28px 32px;background:var(--ink-2);
-    border:1px solid var(--line);border-radius:4px;
-    display:flex;align-items:center;gap:20px;flex-wrap:wrap;
-  }
-  .about-builder .avatar-lg{
-    width:52px;height:52px;border-radius:50%;flex-shrink:0;
-    background:linear-gradient(160deg, var(--tile-light), var(--tile));
-    display:flex;align-items:center;justify-content:center;
-    font-family:'Noto Serif KR',serif;font-weight:900;font-size:20px;color:var(--paper);
-  }
-  .about-builder .text{flex:1;min-width:220px;}
-  .about-builder .text p{margin:0;color:var(--paper-dim);font-size:13.5px;line-height:1.7;}
-  .about-builder .text a{
-    color:var(--paper);font-weight:700;text-decoration:none;
-    border-bottom:1px solid var(--tile-light);transition:color .2s, border-color .2s;
-  }
-  .about-builder .text a:hover{color:var(--brass);border-color:var(--brass);}
-
   footer{
     margin-top:60px;padding-top:24px;border-top:1px solid var(--line);
     display:flex;justify-content:space-between;font-size:12px;color:var(--paper-dim);
@@ -724,20 +705,14 @@
     </div>
   </div>
 
-  <div class="about-builder">
-    <div class="avatar-lg">A</div>
-    <div class="text">
-      <p>
-        Built solo by <a href="https://x.com/Amr_mousa11" target="_blank">Amr Mousa</a> —
-        a web developer applying Web3 development hands-on through this project: idea, smart contract, testing, deployment, and a working frontend, end to end.
-      </p>
-    </div>
-  </div>
-
   <footer>
     <span>Contract: <a href="https://sepolia-explorer.giwa.io/address/0x2b3176f8D3d0C5D1D58e662c5a7180E4E9fEf71B" target="_blank">0x2b31...f71B ↗</a></span>
     <span>GIWA Sepolia · Chain ID 91342</span>
   </footer>
+
+  <div style="text-align:center;padding:20px 0 4px;font-size:12px;color:var(--paper-dim);">
+    Built by <a href="https://x.com/Amr_mousa11" target="_blank" style="color:var(--paper-dim);border-bottom:1px solid var(--line);text-decoration:none;">Amr Mousa</a>
+  </div>
 
 </div>
 
