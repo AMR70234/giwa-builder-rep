@@ -882,6 +882,8 @@ document.getElementById('attestBtn').addEventListener('click', async () => {
     showStatus(statusEl,'pending','⏳ Transaction sent, waiting for it to be mined...');
     await tx.wait();
     showStatus(statusEl,'success','✅ Attestation issued successfully!');
+    loadLeaderboard();
+    if(userAddress) loadMyProfile();
   }catch(e){
     showStatus(statusEl,'error','❌ ' + (e.reason || e.shortMessage || e.message));
   }
