@@ -108,6 +108,50 @@
     to{opacity:1;transform:translateY(0);}
   }
 
+  /* ===== Hero enhancements ===== */
+  .hero-cta{display:flex;gap:12px;margin-top:26px;flex-wrap:wrap;}
+  .hero-cta a{
+    font-family:'Inter',sans-serif;font-size:13px;font-weight:600;
+    padding:10px 20px;border-radius:3px;text-decoration:none;transition:all .2s;
+  }
+  .hero-cta .primary{background:var(--brass);color:var(--ink);}
+  .hero-cta .primary:hover{filter:brightness(1.1);}
+  .hero-cta .secondary{background:transparent;color:var(--paper-dim);border:1px solid var(--line);}
+  .hero-cta .secondary:hover{border-color:var(--tile-light);color:var(--paper);}
+
+  .stats-bar{
+    display:grid;grid-template-columns:repeat(2,1fr);gap:1px;
+    background:var(--line);border:1px solid var(--line);border-radius:4px;
+    overflow:hidden;margin:36px 0 0;
+  }
+  @media(min-width:640px){.stats-bar{grid-template-columns:repeat(4,1fr);}}
+  .stat-cell{background:var(--ink-2);padding:18px 20px;}
+  .stat-cell .n{font-family:'Noto Serif KR',serif;font-weight:900;font-size:26px;color:var(--brass);display:block;}
+  .stat-cell .l{color:var(--paper-dim);font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-top:4px;display:block;}
+
+  /* ===== Problem section ===== */
+  .problem-section{
+    margin:64px 0;padding:36px;background:linear-gradient(160deg, rgba(30,58,95,0.1), transparent 60%);
+    border:1px solid var(--line);border-radius:4px;
+  }
+  .problem-grid{display:grid;grid-template-columns:1fr;gap:28px;margin-top:24px;}
+  @media(min-width:760px){.problem-grid{grid-template-columns:1fr 1fr;}}
+  .problem-col .tag{
+    font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:2px;
+    text-transform:uppercase;margin-bottom:10px;display:block;
+  }
+  .problem-col.bad .tag{color:#e0837e;}
+  .problem-col.good .tag{color:var(--good);}
+  .problem-col h4{font-family:'Noto Serif KR',serif;font-size:17px;margin:0 0 12px;font-weight:700;}
+  .problem-col ul{margin:0;padding:0;list-style:none;}
+  .problem-col li{
+    color:var(--paper-dim);font-size:13.5px;line-height:1.8;padding-left:18px;position:relative;margin-bottom:8px;
+  }
+  .problem-col li::before{
+    content:"—";position:absolute;left:0;color:var(--paper-dim);opacity:0.5;
+  }
+  .problem-col.good li::before{content:"✓";color:var(--good);opacity:1;}
+
   .how-it-works{
     margin-bottom:56px;padding:28px 24px;background:var(--ink-2);
     border:1px solid var(--line);border-radius:4px;
@@ -244,20 +288,27 @@
   .section-head p{color:var(--paper-dim);font-size:13.5px;margin-top:8px;max-width:560px;line-height:1.7;}
 
   /* ===== Use cases ===== */
-  .usecases-grid{display:grid;grid-template-columns:1fr;gap:14px;}
+  .usecases-grid{display:grid;grid-template-columns:1fr;gap:16px;}
   @media(min-width:700px){.usecases-grid{grid-template-columns:1fr 1fr;}}
   .usecase{
     background:var(--ink-2);border:1px solid var(--line);border-radius:4px;
-    padding:22px;transition:border-color .2s, transform .2s;
+    padding:24px;transition:border-color .25s, transform .25s, box-shadow .25s;
   }
-  .usecase:hover{border-color:var(--tile-light);transform:translateY(-2px);}
+  .usecase:hover{
+    border-color:var(--tile-light);transform:translateY(-3px);
+    box-shadow:0 12px 24px -12px rgba(0,0,0,0.5);
+  }
   .usecase .icon{
-    width:34px;height:34px;border-radius:3px;background:rgba(74,123,171,0.12);
-    display:flex;align-items:center;justify-content:center;margin-bottom:14px;
+    width:36px;height:36px;border-radius:3px;background:rgba(74,123,171,0.14);
+    display:flex;align-items:center;justify-content:center;margin-bottom:16px;
     color:var(--tile-glow);font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:13px;
   }
-  .usecase h4{font-family:'Noto Serif KR',serif;font-size:15.5px;margin:0 0 6px;font-weight:700;}
-  .usecase p{color:var(--paper-dim);font-size:13px;line-height:1.7;margin:0;}
+  .usecase h4{font-family:'Noto Serif KR',serif;font-size:16px;margin:0 0 8px;font-weight:700;}
+  .usecase p{color:var(--paper-dim);font-size:13px;line-height:1.75;margin:0;}
+  .usecase-why{
+    margin-top:14px;padding-top:14px;border-top:1px solid var(--line);
+    font-size:12px;color:var(--brass);font-weight:600;
+  }
 
   /* ===== Levels legend ===== */
   .levels-strip{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:0;}
@@ -345,12 +396,53 @@
     <p>
       Like tiles stacking into a roof, each attestation adds a layer to your reputation.
       But not every layer counts the same — a vouch from a trusted builder carries more weight than one from a brand-new account.
+      This is portable, on-chain trust infrastructure for the GIWA ecosystem — built so anyone can verify a builder's track record before working with them.
     </p>
+    <div class="hero-cta">
+      <a href="#get-started" class="primary">Create your profile →</a>
+      <a href="#leaderboard-section" class="secondary">View leaderboard</a>
+    </div>
     <div class="roof-visual">
       <div class="roof-tiles" id="roofViz">
         <div class="tile-row"><div class="tile" style="animation-delay:.05s"></div><div class="tile" style="animation-delay:.1s"></div><div class="tile" style="animation-delay:.15s"></div></div>
         <div class="tile-row"><div class="tile" style="animation-delay:.2s"></div><div class="tile" style="animation-delay:.25s"></div></div>
         <div class="tile-row"><div class="tile" style="animation-delay:.3s"></div></div>
+      </div>
+    </div>
+    <div class="stats-bar">
+      <div class="stat-cell"><span class="n" id="statBuilders">—</span><span class="l">Registered builders</span></div>
+      <div class="stat-cell"><span class="n" id="statAttestations">—</span><span class="l">Attestations issued</span></div>
+      <div class="stat-cell"><span class="n">✓</span><span class="l">Contract verified</span></div>
+      <div class="stat-cell"><span class="n">91342</span><span class="l">GIWA Sepolia chain ID</span></div>
+    </div>
+  </section>
+
+  <section class="problem-section">
+    <div class="eyebrow">WHY THIS EXISTS</div>
+    <h2 style="font-family:'Noto Serif KR',serif;font-size:24px;margin:8px 0 0;">Web3 has no memory of who's actually reliable</h2>
+    <p style="color:var(--paper-dim);font-size:14px;line-height:1.8;margin-top:12px;max-width:680px;">
+      Wallets are pseudonymous by design — which is great for privacy, but it means every new interaction starts from zero trust. A builder who's shipped five successful projects looks identical, on-chain, to a wallet created five minutes ago. That gap is exactly what enables scams, ghosted bounties, and hiring based on vibes instead of evidence.
+    </p>
+    <div class="problem-grid">
+      <div class="problem-col bad">
+        <span class="tag">Today, without this</span>
+        <h4>Trust lives off-chain, or nowhere</h4>
+        <ul>
+          <li>Reputation is scattered across GitHub, Twitter, and Discord DMs</li>
+          <li>Anyone can claim credentials with no way to verify them on-chain</li>
+          <li>New wallets and proven builders look exactly the same</li>
+          <li>Fake attestations are as easy to fake as a five-star review</li>
+        </ul>
+      </div>
+      <div class="problem-col good">
+        <span class="tag">With GIWA Builder Rep</span>
+        <h4>Reputation that's earned, weighted, and portable</h4>
+        <ul>
+          <li>Every attestation is on-chain, timestamped, and permanent</li>
+          <li>Vouches are weighted by the issuer's own earned reputation</li>
+          <li>Your track record travels with your wallet — not locked to one app</li>
+          <li>Sybil attacks are expensive: fake accounts start at weight zero</li>
+        </ul>
       </div>
     </div>
   </section>
@@ -378,7 +470,7 @@
   </section>
 
   <!-- ===== USE CASES ===== -->
-  <section>
+  <section id="usecases">
     <div class="section-head">
       <div class="eyebrow">02 / WHO IT'S FOR</div>
       <h2>Built for real GIWA workflows</h2>
@@ -389,27 +481,31 @@
         <div class="icon">FL</div>
         <h4>Freelancers</h4>
         <p>Prove delivered work with on-chain attestations from real clients and collaborators — a portable track record that travels with your wallet, not locked inside one platform.</p>
+        <div class="usecase-why">Why it matters: no more starting from zero on every new gig.</div>
       </div>
       <div class="usecase">
         <div class="icon">DAO</div>
         <h4>DAOs</h4>
         <p>Weight governance participation or contributor selection by verifiable reputation instead of token balance alone — harder to game than a simple vote count.</p>
+        <div class="usecase-why">Why it matters: contribution, not just capital, decides influence.</div>
       </div>
       <div class="usecase">
         <div class="icon">BH</div>
         <h4>Bounties &amp; hackathons</h4>
         <p>Organizers can filter applicants by track record before a single line of code is reviewed, cutting down on low-effort or duplicate submissions.</p>
+        <div class="usecase-why">Why it matters: less noise, more signal for organizers.</div>
       </div>
       <div class="usecase">
         <div class="icon">HR</div>
         <h4>Hiring in Web3</h4>
         <p>Teams hiring on-chain talent get a verifiable signal beyond a GitHub profile or a resume — attestations from people who've actually worked with the candidate.</p>
+        <div class="usecase-why">Why it matters: real vouches beat a polished resume.</div>
       </div>
     </div>
   </section>
 
   <!-- ===== LEADERBOARD ===== -->
-  <section>
+  <section id="leaderboard-section">
     <div class="section-head">
       <div class="eyebrow">03 / TOP BUILDERS</div>
       <h2>Leaderboard</h2>
@@ -423,7 +519,7 @@
     </div>
   </section>
 
-  <div class="section-head">
+  <div class="section-head" id="get-started">
     <div class="eyebrow">04 / GET STARTED</div>
     <h2>Try it yourself</h2>
   </div>
@@ -734,10 +830,17 @@ async function loadLeaderboard(){
 
   try{
     const filter = readContract.filters.ProfileCreated();
-    const events = await Promise.race([
-      readContract.queryFilter(filter, 0, 'latest'),
+    const attestFilter = readContract.filters.AttestationIssued();
+    const [events, attestEvents] = await Promise.race([
+      Promise.all([
+        readContract.queryFilter(filter, 0, 'latest'),
+        readContract.queryFilter(attestFilter, 0, 'latest')
+      ]),
       timeout(15000)
     ]);
+
+    document.getElementById('statBuilders').textContent = new Set(events.map(e => e.args.user)).size;
+    document.getElementById('statAttestations').textContent = attestEvents.length;
 
     if(events.length === 0){
       body.innerHTML = '<div class="lb-empty">No builders have created a profile yet — be the first below.</div>';
@@ -781,6 +884,8 @@ async function loadLeaderboard(){
     `;
   }catch(e){
     console.error(e);
+    document.getElementById('statBuilders').textContent = '—';
+    document.getElementById('statAttestations').textContent = '—';
     body.innerHTML = '<div class="lb-empty">Couldn\'t reach the network right now. <a class="cta-link" onclick="loadLeaderboard()">Try again</a></div>';
   }
 }
